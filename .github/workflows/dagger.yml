@@ -1,0 +1,25 @@
+name: build
+
+on: [ 'push', 'pull_request', 'workflow_dispatch' ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.node_version }}
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest' ]
+        node_version: [ '14', '16' ]
+        architecture: [ 'x64' ]
+    name: Node ${{ matrix.node_version }}_${{ matrix.architecture }}
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Dagger
+        run: 'curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.2.19 sh'
+      
+      - name: Dagger project update
+        run: 'dagger project update'
+      
+      - name: Run build
+        run: 'dagger do build'
