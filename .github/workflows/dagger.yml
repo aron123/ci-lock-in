@@ -3,8 +3,8 @@ name: dagger-build
 on: [ 'push', 'pull_request', 'workflow_dispatch' ]
 
 env:
-  COVERALLS_GIT_COMMIT: ${{ env.GITHUB_SHA }}
-  COVERALLS_GIT_BRANCH: ${{ env.GITHUB_REF_NAME }}
+  COVERALLS_GIT_COMMIT: ${{ github.sha }}
+  COVERALLS_GIT_BRANCH: ${{ github.ref.name }}
 
 jobs:
   test:
