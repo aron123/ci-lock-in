@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Dagger
-        run: 'curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.2.19 sh'
+        run: 'cd /usr/local && curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.2.19 sh'
       
       - name: Dagger project update
         run: 'dagger project update'
