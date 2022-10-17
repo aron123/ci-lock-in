@@ -4,13 +4,7 @@ on: [ 'push', 'pull_request', 'workflow_dispatch' ]
 
 jobs:
   test:
-    runs-on: ${{ matrix.node_version }}
-    strategy:
-      matrix:
-        os: [ 'ubuntu-latest' ]
-        node_version: [ '14', '16' ]
-        architecture: [ 'x64' ]
-    name: Node ${{ matrix.node_version }}_${{ matrix.architecture }}
+    runs-on: ubuntu-latest
     
     steps:
       - uses: actions/checkout@v2
