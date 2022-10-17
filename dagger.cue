@@ -9,58 +9,63 @@ import (
 )
 
 dagger.#Plan & {
-	client: env: COVERALLS_REPO_TOKEN: dagger.#Secret
+	client: env: COVERALLS_REPO_TOKEN: dagger.#Secret | *""
 	actions: {
 		build: {
-			// check out source code
-			checkout: core.#Source & {
-				path: "."
-				exclude: [
-					"node_modules",
-					"coverage",
-					".nyc_output",
-					".vscode",
-				]
-			}
+			"node:lts-gallium": _ // Node.js v16
+			"node:lts-fermium": _ // Node.js v14
 
-			// pull an image from Docker Hub, that already contains Node.js and bash
-			pull: docker.#Pull & {
-				source: "node:lts-gallium"
-			}
+			[docker_image=string]: {
+				// check out source code
+				checkout: core.#Source & {
+					path: "."
+					exclude: [
+						"node_modules",
+						"coverage",
+						".nyc_output",
+						".vscode",
+					]
+				}
 
-			// set up workdir folder in the downloaded image
-			setupImage: docker.#Set & {
-				input: pull.output
-				config: workdir: "/app"
-			}
+				// pull an image from Docker Hub, that already contains Node.js and bash
+				pull: docker.#Pull & {
+					source: "\(docker_image)"
+				}
 
-			// copy code to Docker container's filesystem
-			copy: docker.#Copy & {
-				input:    setupImage.output
-				contents: checkout.output
-			}
+				// set up workdir folder in the downloaded image
+				setupImage: docker.#Set & {
+					input: pull.output
+					config: workdir: "/app"
+				}
 
-			// install dependencies of the project
-			install: bash.#Run & {
-				input: copy.output
-				script: contents: "npm ci"
-			}
+				// copy code to Docker container's filesystem
+				copy: docker.#Copy & {
+					input:    setupImage.output
+					contents: checkout.output
+				}
 
-			// test code and measure coverage
-			measureCoverage: bash.#Run & {
-				input: install.output
-				script: contents: "npm run coverage"
-			}
+				// install dependencies of the project
+				install: bash.#Run & {
+					input: copy.output
+					script: contents: "npm ci"
+				}
 
-			// report coverage stats to Coveralls
-			reportCoverage: bash.#Run & {
-				input: measureCoverage.output
-                env: {
-                    COVERALLS_SERVICE_NAME: "Dagger"
-					COVERALLS_GIT_BRANCH:   "master"
-                    COVERALLS_REPO_TOKEN: client.env.COVERALLS_REPO_TOKEN
-                }
-                script: contents: "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
+				// test code and measure coverage
+				measureCoverage: bash.#Run & {
+					input: install.output
+					script: contents: "npm run coverage"
+				}
+
+				// report coverage stats to Coveralls
+				reportCoverage: bash.#Run & {
+					input: measureCoverage.output
+					env: {
+						COVERALLS_SERVICE_NAME: "Dagger"
+						COVERALLS_GIT_BRANCH:   "master"
+						COVERALLS_REPO_TOKEN:   client.env.COVERALLS_REPO_TOKEN
+					}
+					script: contents: "cat ./coverage/lcov.info | [[ -n $COVERALLS_REPO_TOKEN ]] && ./node_modules/.bin/coveralls"
+				}
 			}
 		}
 	}
