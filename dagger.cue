@@ -9,7 +9,11 @@ import (
 )
 
 dagger.#Plan & {
-	client: env: COVERALLS_REPO_TOKEN: dagger.#Secret | *""
+	client: env: {
+		COVERALLS_REPO_TOKEN: dagger.#Secret | *""
+		COVERALLS_GIT_COMMIT: string | *""
+		COVERALLS_GIT_BRANCH: string | *"master"
+	}
 	actions: {
 		build: {
 			"node:lts-gallium": _ // Node.js v16
@@ -24,7 +28,7 @@ dagger.#Plan & {
 						"coverage",
 						".nyc_output",
 						".vscode",
-						".github"
+						".github",
 					]
 				}
 
@@ -62,7 +66,8 @@ dagger.#Plan & {
 					input: measureCoverage.output
 					env: {
 						COVERALLS_SERVICE_NAME: "Dagger"
-						COVERALLS_GIT_BRANCH:   "master"
+						COVERALLS_GIT_BRANCH:   client.env.COVERALLS_GIT_BRANCH
+						COVERALLS_GIT_COMMIT:   client.env.COVERALLS_GIT_COMMIT
 						COVERALLS_REPO_TOKEN:   client.env.COVERALLS_REPO_TOKEN
 					}
 					script: contents: "cat ./coverage/lcov.info | [[ -n $COVERALLS_REPO_TOKEN ]] && ./node_modules/.bin/coveralls || echo 'Skipping coverage reporting.'"

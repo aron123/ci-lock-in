@@ -2,6 +2,10 @@ name: dagger-build
 
 on: [ 'push', 'pull_request', 'workflow_dispatch' ]
 
+env:
+  COVERALLS_GIT_COMMIT: ${{ env.GITHUB_SHA }}
+  COVERALLS_GIT_BRANCH: ${{ env.GITHUB_REF_NAME }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
