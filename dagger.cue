@@ -9,6 +9,7 @@ import (
 )
 
 dagger.#Plan & {
+	client: env: COVERALLS_REPO_TOKEN: dagger.#Secret
 	actions: {
 		build: {
 			// check out source code
@@ -30,9 +31,7 @@ dagger.#Plan & {
 			// set up workdir folder in the downloaded image
 			setupImage: docker.#Set & {
 				input: pull.output
-				config: {
-					workdir: "/app"
-				}
+				config: workdir: "/app"
 			}
 
 			// copy code to Docker container's filesystem
@@ -53,10 +52,16 @@ dagger.#Plan & {
 				script: contents: "npm run coverage"
 			}
 
-            reportCoverage: bash.#Run & {
-                input: measureCoverage.output
-                script: contents:
-            }
+			// report coverage stats to Coveralls
+			reportCoverage: bash.#Run & {
+				input: measureCoverage.output
+                env: {
+                    COVERALLS_SERVICE_NAME: "Dagger"
+					COVERALLS_GIT_BRANCH:   "master"
+                    COVERALLS_REPO_TOKEN: client.env.COVERALLS_REPO_TOKEN
+                }
+                script: contents: "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
+			}
 		}
 	}
 }
