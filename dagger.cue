@@ -10,7 +10,7 @@ import (
 
 dagger.#Plan & {
 	client: env: {
-		COVERALLS_REPO_TOKEN: dagger.#Secret | *""
+		COVERALLS_REPO_TOKEN?: dagger.#Secret
 		COVERALLS_GIT_COMMIT: string | *""
 		COVERALLS_GIT_BRANCH: string | *"master"
 	}
