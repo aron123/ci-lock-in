@@ -1,0 +1,8 @@
+coverage/
+.nyc_output/
+test/
+.vscode/
+.github/
+
+.gitattributes
+.eslintrc.js
