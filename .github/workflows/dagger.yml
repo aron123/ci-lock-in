@@ -16,4 +16,4 @@ jobs:
         run: 'dagger project update'
       
       - name: Run build
-        run: 'dagger do build'
+        run: 'dagger do build --log-level debug --log-format plain'
