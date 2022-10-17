@@ -10,10 +10,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Dagger
-        run: 'cd /usr/local && curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.2.19 sh'
+        run: 'cd /usr/local && curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.2.36 sh'
       
       - name: Dagger project update
         run: 'dagger project update'
       
       - name: Run build
-        run: 'dagger do build --log-level debug --log-format plain'
+        run: 'dagger do build'

@@ -24,6 +24,7 @@ dagger.#Plan & {
 						"coverage",
 						".nyc_output",
 						".vscode",
+						".github"
 					]
 				}
 
@@ -64,7 +65,7 @@ dagger.#Plan & {
 						COVERALLS_GIT_BRANCH:   "master"
 						COVERALLS_REPO_TOKEN:   client.env.COVERALLS_REPO_TOKEN
 					}
-					script: contents: "cat ./coverage/lcov.info | [[ -n $COVERALLS_REPO_TOKEN ]] && ./node_modules/.bin/coveralls"
+					script: contents: "cat ./coverage/lcov.info | [[ -n $COVERALLS_REPO_TOKEN ]] && ./node_modules/.bin/coveralls || echo 'Skipping coverage reporting.'"
 				}
 			}
 		}
