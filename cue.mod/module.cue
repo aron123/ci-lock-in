@@ -1,1 +1,1 @@
-module: ""
+module: "github.com/aron123/ci-lock-in"

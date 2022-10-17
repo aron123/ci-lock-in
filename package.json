@@ -73,7 +73,8 @@
       "test/**",
       "lib/constants.js",
       "lib/domain/**",
-      ".eslintrc.js"
+      ".eslintrc.js",
+      "cue.mod/**"
     ]
   }
 }
