@@ -1,4 +1,4 @@
-name: build
+name: dagger-build
 
 on: [ 'push', 'pull_request', 'workflow_dispatch' ]
 
