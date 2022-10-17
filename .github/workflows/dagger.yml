@@ -3,9 +3,9 @@ name: dagger-build
 on: [ 'push', 'pull_request', 'workflow_dispatch' ]
 
 env:
-  COVERALLS_GIT_COMMIT: ${{ github.sha }}
-  COVERALLS_GIT_BRANCH: ${{ github.ref.name }}
-  COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+  COVERALLS_GIT_COMMIT: '${{ github.sha }}'
+  COVERALLS_GIT_BRANCH: '${{ github.ref.name }}'
+  COVERALLS_REPO_TOKEN: '${{ secrets.COVERALLS_REPO_TOKEN }}'
 
 jobs:
   test:

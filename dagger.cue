@@ -70,7 +70,7 @@ dagger.#Plan & {
 						COVERALLS_GIT_COMMIT:   client.env.COVERALLS_GIT_COMMIT
 						COVERALLS_REPO_TOKEN:   client.env.COVERALLS_REPO_TOKEN
 					}
-					script: contents: "cat ./coverage/lcov.info | [[ -n $COVERALLS_REPO_TOKEN ]] && ./node_modules/.bin/coveralls || echo 'Skipping coverage reporting.'"
+					script: contents: "[[ -n $COVERALLS_REPO_TOKEN ]] && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || echo 'Skipping coverage reporting.'"
 				}
 			}
 		}
