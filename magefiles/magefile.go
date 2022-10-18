@@ -33,7 +33,7 @@ func Build() error {
 	}
 }
 
-func mergeCoverageStats() error {
+func MergeCoverageStats() error {
 	env := make(map[string]string)
 	env["COVERALLS_REPO_TOKEN"] = os.Getenv("COVERALLS_REPO_TOKEN")
 	env["COVERALLS_SERVICE_NUMBER"] = os.Getenv("COVERALLS_SERVICE_NUMBER")
