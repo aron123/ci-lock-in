@@ -33,3 +33,10 @@ func Build() error {
 	}
 }
 
+func mergeCoverageStats() error {
+	env := make(map[string]string)
+	env["COVERALLS_REPO_TOKEN"] = os.Getenv("COVERALLS_REPO_TOKEN")
+	env["COVERALLS_SERVICE_NUMBER"] = os.Getenv("COVERALLS_SERVICE_NUMBER")
+
+	return sh.RunWithV(env, "curl", "-k", "https://coveralls.io/webhook?repo_token=$COVERALLS_REPO_TOKEN", "-d", "payload[build_num]=$COVERALLS_SERVICE_NUMBER&payload[status]=done")
+}
