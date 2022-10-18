@@ -1,0 +1,31 @@
+name: dagger-build
+
+on: [ 'push', 'pull_request', 'workflow_dispatch' ]
+
+env:
+  COVERALLS_GIT_COMMIT: '${{ github.sha }}'
+  COVERALLS_GIT_BRANCH: '${{ github.ref_name }}'
+  COVERALLS_REPO_TOKEN: '${{ secrets.COVERALLS_REPO_TOKEN }}'
+  COVERALLS_SERVICE_NUMBER: '${{ github.run_id }}'
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest' ]
+        architecture: [ 'x64' ]
+        node_version: [ '14', '16' ]
+    name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Mage
+        run: 'cd /usr/local/bin && curl https://github.com/magefile/mage/releases/download/v1.14.0/mage_1.14.0_Linux-64bit.tar.gz && tar -xzf mage_1.14.0_Linux-64bit.tar.gz'
+      
+      - name: Install Magefile's dependencies
+        run: 'go mod download'
+      
+      - name: Run build
+        run: 'mage build'
