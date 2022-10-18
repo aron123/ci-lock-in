@@ -30,12 +30,12 @@ jobs:
       - name: Run build
         run: 'mage build'
 
-merge-stats:
-    name: Merge coverage tests on Coveralls
+  merge-stats:
+      name: Merge coverage tests on Coveralls
 
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Run merge
-      run: 'mage mergeCoverageStats'
+      needs: build
+      runs-on: ubuntu-latest
+      
+      steps:
+      - name: Run merge
+        run: 'mage mergeCoverageStats'
