@@ -10,9 +10,10 @@ import (
 
 dagger.#Plan & {
 	client: env: {
-		COVERALLS_REPO_TOKEN?: dagger.#Secret
-		COVERALLS_GIT_COMMIT: string | *""
-		COVERALLS_GIT_BRANCH: string | *"master"
+		COVERALLS_REPO_TOKEN?:     dagger.#Secret
+		COVERALLS_GIT_COMMIT?:     string
+		COVERALLS_GIT_BRANCH:      string | *"master"
+		COVERALLS_SERVICE_NUMBER?: string
 	}
 	actions: {
 		build: {
@@ -65,13 +66,29 @@ dagger.#Plan & {
 				reportCoverage: bash.#Run & {
 					input: measureCoverage.output
 					env: {
-						COVERALLS_SERVICE_NAME: "Dagger"
-						COVERALLS_GIT_BRANCH:   client.env.COVERALLS_GIT_BRANCH
-						COVERALLS_GIT_COMMIT:   client.env.COVERALLS_GIT_COMMIT
-						COVERALLS_REPO_TOKEN:   client.env.COVERALLS_REPO_TOKEN
+						COVERALLS_SERVICE_NAME:   "Dagger"
+						COVERALLS_GIT_BRANCH:     client.env.COVERALLS_GIT_BRANCH
+						COVERALLS_GIT_COMMIT:     client.env.COVERALLS_GIT_COMMIT
+						COVERALLS_REPO_TOKEN:     client.env.COVERALLS_REPO_TOKEN
+						COVERALLS_SERVICE_NUMBER: client.env.COVERALLS_SERVICE_NUMBER
+						COVERALLS_PARALLEL:       "true"
 					}
 					script: contents: "[[ -n $COVERALLS_REPO_TOKEN ]] && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || echo 'Skipping coverage reporting.'"
 				}
+			}
+		}
+		mergeCoverageStats: {
+			pull: docker.#Pull & {
+				source: "ellerbrock/alpine-bash-curl-ssl:0.3.0"
+			}
+
+			call: bash.#Run & {
+				input: pull.output
+				env: {
+					COVERALLS_REPO_TOKEN:     client.env.COVERALLS_REPO_TOKEN
+					COVERALLS_SERVICE_NUMBER: client.env.COVERALLS_SERVICE_NUMBER
+				}
+				script: contents: "curl -k https://coveralls.io/webhook?repo_token=$COVERALLS_REPO_TOKEN -d \"payload[build_num]=$COVERALLS_SERVICE_NUMBER&payload[status]=done\""
 			}
 		}
 	}
