@@ -1,4 +1,4 @@
-package todoapp
+package node_barion
 
 import (
 	"dagger.io/dagger"
@@ -16,6 +16,7 @@ dagger.#Plan & {
 		COVERALLS_SERVICE_NUMBER?: string
 	}
 	actions: {
+		// install dependencies, run test, measure and report code coverage
 		build: {
 			"node:lts-gallium": _ // Node.js v16
 			"node:lts-fermium": _ // Node.js v14
@@ -77,11 +78,14 @@ dagger.#Plan & {
 				}
 			}
 		}
+		// merge coverage stats made in several environments
 		mergeCoverageStats: {
+			// pull a Docker image that contains bash and curl
 			pull: docker.#Pull & {
 				source: "ellerbrock/alpine-bash-curl-ssl:0.3.0"
 			}
 
+			// send 'done' status to Coveralls service 
 			call: bash.#Run & {
 				input: pull.output
 				env: {
