@@ -1,7 +1,7 @@
 # Build automation systems against CI lock-in
 [![DOI](https://zenodo.org/badge/552818823.svg)](https://zenodo.org/badge/latestdoi/552818823)
 
-A demonstration project for the article _Build automation systems against CI lock-in - A comparative study of Dagger and Mage_.
+A demonstration project for the article [Build automation systems against CI lock-in - A comparative study of Dagger and Mage](https://doi.org/10.32968/psaie.2022.3.6).
 
 ## Cite as
 
